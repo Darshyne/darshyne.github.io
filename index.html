@@ -10,6 +10,9 @@
 <meta property="og:type" content="website">
 <meta property="og:image" content="clips/short-01.jpg">
 <meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="img/icon-512.png">
+<link rel="apple-touch-icon" href="img/icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -22,8 +25,9 @@
   --ink: #1b2130;
   --muted: #5a6275;
   --line: #c9cfdb;
-  --gold: #9a6a14;        /* engraved gold, darkened for light ground */
-  --gold-soft: #e8d3a6;
+  --gold: #b0004f;        /* accent taken from the logo gradient, darkened for the light ground */
+  --gold-soft: #f5d2e3;
+  --logo: linear-gradient(180deg, #e005f4, #ee0388 50%, #fc0016);  /* the DAS logo's own gradient */
   --arcane: #2f6f7a;      /* reach / movement teal */
   --danger: #a33a2c;
   --screen: #0d1016;      /* behind the clips: Foundry's own dark canvas */
@@ -35,12 +39,12 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #12161f; --surface: #1a202c; --ink: #e6e8ee; --muted: #9aa2b4; --line: #2c3444;
-    --gold: #d9a94a; --gold-soft: #3a2f1a; --arcane: #5fb3be; --danger: #e0715f; --screen: #07090d; color-scheme: dark;
+    --gold: #ff4d8d; --gold-soft: #3b1529; --arcane: #5fb3be; --danger: #e0715f; --screen: #07090d; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #12161f; --surface: #1a202c; --ink: #e6e8ee; --muted: #9aa2b4; --line: #2c3444;
-  --gold: #d9a94a; --gold-soft: #3a2f1a; --arcane: #5fb3be; --danger: #e0715f; --screen: #07090d; color-scheme: dark;
+  --gold: #ff4d8d; --gold-soft: #3b1529; --arcane: #5fb3be; --danger: #e0715f; --screen: #07090d; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -62,7 +66,8 @@ section { padding-block: 72px; border-top: 1px solid var(--line); }
 
 /* Nav */
 nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; flex-wrap: wrap; }
-.brand { font-family: var(--display); font-size: 1.2rem; letter-spacing: .02em; }
+.brand { font-family: var(--display); font-size: 1.2rem; letter-spacing: .02em; display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; }
+.brand img { height: 34px; width: auto; }
 .brand b { color: var(--gold); font-weight: 400; }
 .navlinks { display: flex; gap: 20px; flex-wrap: wrap; font-size: .92rem; }
 .navlinks a { color: var(--muted); text-decoration: none; }
@@ -71,11 +76,11 @@ nav { display: flex; align-items: center; justify-content: space-between; gap: 1
 /* Hero */
 .hero { display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: center; padding-block: 32px 72px; }
 .hero h1 { font-size: clamp(2.3rem, 5.2vw, 3.7rem); line-height: 1.05; }
-.hero h1 em { font-style: normal; color: var(--gold); }
+.hero h1 em { font-style: normal; color: var(--gold); background: var(--logo); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .hero .copy { display: grid; gap: 22px; min-width: 0; }
 .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
 .btn { display: inline-block; padding: 12px 20px; border-radius: 4px; font-weight: 600; text-decoration: none; font-size: .95rem; border: 1px solid var(--gold); }
-.btn.primary { background: var(--gold); color: var(--bg); }
+.btn.primary { background: var(--logo); color: #fff; border-color: transparent; }
 .btn.ghost { color: var(--ink); }
 .facts { display: flex; gap: 22px; flex-wrap: wrap; font-size: .88rem; color: var(--muted); }
 .facts strong { display: block; font: 400 1.5rem/1.1 var(--display); color: var(--ink); font-variant-numeric: tabular-nums; }
@@ -153,7 +158,7 @@ footer .links { display: flex; gap: 20px; flex-wrap: wrap; }
 
 <div class="wrap">
   <nav>
-    <div class="brand">Darshyne's <b>Automation</b> Suite</div>
+    <a class="brand" href="#"><img src="img/logo.png" alt="DAS" width="59" height="34"><span>Darshyne's <b>Automation</b> Suite</span></a>
     <div class="navlinks">
       <a href="#modules">Modules</a>
       <a href="#install">Install</a>
