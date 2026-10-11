@@ -125,7 +125,7 @@ const T = [
   [`<span class="eyebrow">How it's made</span>`, '<span class="eyebrow">Comment c\'est fait</span>'],
   ['Written with an AI. Checked like it matters.', 'Écrit avec une IA. Vérifié avec soin.'],
   [`“I'm a game master, not a developer. DAS is written with the help of an AI, and here is what I do to make sure it holds up at the table.”`,
-   '« Je suis MJ, pas développeur. DAS est écrit avec l\'aide d\'une IA, et voici ce que je fais pour qu\'il tienne la route à la table. »'],
+   '« Je suis MJ, pas développeur. DAS est écrit avec l\'aide d\'une IA, pour autant cela me demande beaucoup de temps pour qu\'il tienne la route. »'],
   ['<strong>1,400+</strong><p>automated tests, run by GitHub on every change.</p>', '<strong>1 400+</strong><p>tests automatiques, lancés par GitHub à chaque modification.</p>'],
   ['<p>combat scenarios replayed inside Foundry.</p>', '<p>scénarios de combat rejoués dans Foundry.</p>'],
   ['<p>patches to Foundry or the dnd5e system. Public hooks only.</p>', '<p>modification de Foundry ou du système dnd5e. Uniquement les points d\'accroche publics.</p>'],
