@@ -24,7 +24,7 @@ const T = [
   ['<a class="lang" href="fr/" hreflang="fr" lang="fr">FR</a>', '<a class="lang" href="../" hreflang="en" lang="en">EN</a>'],
   // Hero
   ['Foundry VTT V14 · dnd5e 6 · D&amp;D 2024 rules', 'Foundry VTT V14 · dnd5e 6 · règles D&amp;D 2024'],
-  ['<h1>Full automation<br> <em>Out of the box</em></h1>', '<h1>Tout automatisé<br> <em>Dès l\'installation</em></h1>'],
+  ['<h1>Full automation<br> <em>Out of the box</em></h1>', '<h1>Tout automatisé<br> <em>Prêt à jouer</em></h1>'],
   [`Baldur's Gate 3-style combat for Foundry: move along a path, attack from a click, react and roll your saves on your own screen. Every class and species of the 2024 Player's Handbook is automated. Free and open source.`,
    `Le combat façon Baldur's Gate 3 dans Foundry : on se déplace le long d'un chemin, on attaque d'un clic, on réagit et on lance ses jets de sauvegarde sur son propre écran. Toutes les classes et espèces du Manuel des joueurs 2024 sont automatisées. Gratuit et open source.`],
   ['Install in two minutes', 'Installer en deux minutes'],
