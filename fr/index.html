@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Darshyne's Automation Suite</title>
+<meta name="description" content="Le combat façon Baldur's Gate 3 pour Foundry VTT et D&amp;D 2024 : cliquer pour se déplacer, cliquer pour attaquer, réagir sur son propre écran. Six modules gratuits et open source.">
+<meta property="og:title" content="Darshyne's Automation Suite">
+<meta property="og:description" content="Le combat façon Baldur's Gate 3 pour Foundry VTT et D&amp;D 2024. Gratuit et open source.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://darshyne.github.io/img/social-preview.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="alternate" hreflang="en" href="https://darshyne.github.io/">
+<link rel="alternate" hreflang="fr" href="https://darshyne.github.io/fr/">
+<link rel="alternate" hreflang="x-default" href="https://darshyne.github.io/">
+<link rel="icon" type="image/png" sizes="32x32" href="../img/icon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="../img/icon-512.png">
+<link rel="apple-touch-icon" href="../img/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one long column. A looping clip of the real thing opens the page, then the automation pitch,
+   modules as a catalogue with their vertical clips, install, and "how it's made". */
+:root {
+  --bg: #e9ecf2;          /* pale slate, cool like a stone floor */
+  --surface: #f6f7fa;
+  --ink: #1b2130;
+  --muted: #5a6275;
+  --line: #c9cfdb;
+  --gold: #b0004f;        /* accent taken from the logo gradient, darkened for the light ground */
+  --gold-soft: #f5d2e3;
+  --logo: linear-gradient(180deg, #e005f4, #ee0388 50%, #fc0016);  /* the DAS logo's own gradient */
+  --arcane: #2f6f7a;      /* reach / movement teal */
+  --danger: #a33a2c;
+  --screen: #0d1016;      /* behind the clips: Foundry's own dark canvas */
+  --display: "Marcellus", "Trajan Pro", Georgia, serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12161f; --surface: #1a202c; --ink: #e6e8ee; --muted: #9aa2b4; --line: #2c3444;
+    --gold: #ff4d8d; --gold-soft: #3b1529; --arcane: #5fb3be; --danger: #e0715f; --screen: #07090d; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12161f; --surface: #1a202c; --ink: #e6e8ee; --muted: #9aa2b4; --line: #2c3444;
+  --gold: #ff4d8d; --gold-soft: #3b1529; --arcane: #5fb3be; --danger: #e0715f; --screen: #07090d; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1rem/1.6 var(--body); }
+img, video { max-width: 100%; display: block; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 20px; }
+a { color: var(--gold); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--arcane); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; text-wrap: balance; margin: 0; }
+h2 { font-size: clamp(1.7rem, 3.4vw, 2.3rem); line-height: 1.15; }
+h3 { font-size: 1.3rem; }
+p { margin: 0; }
+.eyebrow { font: 600 .74rem/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+section { padding-block: 72px; border-top: 1px solid var(--line); }
+.lede { color: var(--muted); max-width: 62ch; font-size: 1.08rem; }
+
+
+/* Nav */
+nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; flex-wrap: wrap; }
+.brand { font-family: var(--display); font-size: 1.2rem; letter-spacing: .02em; display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; }
+.brand img { height: 34px; width: auto; }
+.brand b { color: var(--gold); font-weight: 400; }
+.navlinks { display: flex; gap: 20px; flex-wrap: wrap; font-size: .92rem; }
+.navlinks a { color: var(--muted); text-decoration: none; }
+.navlinks a:hover { color: var(--ink); }
+.navlinks .lang { border: 1px solid var(--line); border-radius: 3px; padding: 0 8px; font-weight: 600; letter-spacing: .06em; }
+
+/* Hero */
+.hero { display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: center; padding-block: 32px 72px; }
+.hero h1 { font-size: clamp(2.3rem, 5.2vw, 3.7rem); line-height: 1.05; }
+.hero h1 em { font-style: normal; color: var(--gold); background: var(--logo); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.hero .copy { display: grid; gap: 22px; min-width: 0; }
+.ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn { display: inline-block; padding: 12px 20px; border-radius: 4px; font-weight: 600; text-decoration: none; font-size: .95rem; border: 1px solid var(--gold); }
+.btn.primary { background: var(--logo); color: #fff; border-color: transparent; }
+.btn.ghost { color: var(--ink); }
+.facts { display: flex; gap: 22px; flex-wrap: wrap; font-size: .88rem; color: var(--muted); }
+.facts strong { display: block; font: 400 1.5rem/1.1 var(--display); color: var(--ink); font-variant-numeric: tabular-nums; }
+.screen { justify-self: center; width: min(100%, 340px); aspect-ratio: 9 / 16; border-radius: 10px; overflow: hidden;
+  background: var(--screen); border: 1px solid var(--line); box-shadow: 0 18px 40px -18px rgb(0 0 0 / .55); }
+.screen video { width: 100%; height: 100%; object-fit: cover; }
+.caption { font-size: .8rem; color: var(--muted); }
+
+/* L'automatisation, en simple */
+.replace { display: grid; grid-template-columns: 1fr auto 1fr; gap: 28px; align-items: center; margin-top: 32px; }
+.pile { display: flex; flex-wrap: wrap; gap: 8px; }
+.pile span { border: 1px solid var(--line); border-radius: 3px; padding: 6px 10px; font-size: .9rem; color: var(--muted); text-decoration: line-through; text-decoration-color: var(--danger); }
+.arrow { font: 400 2rem var(--display); color: var(--gold); }
+.core-tile { border: 1px solid var(--gold); border-radius: 4px; padding: 18px 20px; display: grid; gap: 8px; background: var(--surface); min-width: 0; }
+.core-tile h3 { color: var(--gold); font-size: 1.6rem; }
+.core-tile p { color: var(--muted); font-size: .95rem; }
+
+/* Modules */
+.modules { display: grid; gap: 64px; margin-top: 40px; }
+.mod { display: grid; grid-template-columns: 1fr 1.7fr; gap: 36px; align-items: start; }
+.mod .text { display: grid; gap: 12px; min-width: 0; }
+.mod ul { margin: 0; padding-left: 1.1em; color: var(--muted); display: grid; gap: 4px; }
+.mod .need { font-size: .82rem; color: var(--muted); }
+.tag { display: inline-block; font: 600 .7rem var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--arcane); }
+.clips { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; min-width: 0; }
+.clip { margin: 0; display: grid; gap: 6px; min-width: 0; position: relative; }
+.clip video, .clip .soon { aspect-ratio: 9 / 16; width: 100%; border-radius: 6px; background: var(--screen); border: 1px solid var(--line); object-fit: cover; }
+.clip video, .screen video { cursor: zoom-in; }
+.clip video:hover { border-color: var(--gold); }
+.clip .zoom { position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+  background: rgb(0 0 0 / .55); color: #fff; font-size: 15px; pointer-events: none; }
+
+/* Full-size viewer */
+.viewer { border: 0; padding: 0; margin: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; background: transparent; color: #e6e8ee; }
+.viewer::backdrop { background: rgb(5 7 10 / .9); }
+.viewer[open] { display: grid; grid-template-columns: auto minmax(0, auto) auto; align-items: center; justify-content: center; gap: 16px; padding-inline: 16px; }
+.viewer figure { margin: 0; display: grid; gap: 10px; justify-items: center; min-width: 0; }
+.viewer video { height: min(84dvh, calc((100vw - 140px) * 16 / 9)); aspect-ratio: 9 / 16; width: auto; max-width: 100%; border-radius: 8px; background: #000; }
+.viewer figcaption { font-size: .95rem; text-align: center; }
+.viewer figcaption span { display: block; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: #ff4d8d; }
+.viewer button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgb(255 255 255 / .3); background: rgb(255 255 255 / .08);
+  color: #fff; font-size: 1.3rem; cursor: pointer; display: grid; place-items: center; }
+.viewer button:hover { background: rgb(255 255 255 / .18); }
+.viewer .close { position: fixed; top: calc(14px + env(safe-area-inset-top, 0px)); right: 14px; }
+@media (max-width: 600px) { .viewer .nav { position: fixed; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); } .viewer .prev { left: 18px; } .viewer .next { right: 18px; } }
+.clip .soon { display: grid; place-items: center; color: var(--muted); font-size: .78rem; text-align: center; padding: 10px;
+  background: repeating-linear-gradient(135deg, transparent 0 10px, var(--line) 10px 11px); }
+.clip figcaption { font-size: .82rem; line-height: 1.3; }
+.clip figcaption span { display: block; font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); }
+
+/* Install */
+.steps { display: grid; gap: 28px; margin-top: 32px; }
+.step { display: grid; grid-template-columns: 2.4rem 1fr; gap: 16px; }
+.step .n { font: 400 1.8rem/1 var(--display); color: var(--gold); }
+.step > div { display: grid; gap: 10px; min-width: 0; }
+.urls { display: grid; gap: 8px; }
+.url { display: grid; grid-template-columns: 11rem 1fr auto; gap: 12px; align-items: center; border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px; background: var(--surface); }
+.url .name { font-weight: 600; font-size: .9rem; }
+.url .name small { display: block; font-weight: 400; color: var(--muted); font-size: .76rem; }
+.url code { font-family: var(--mono); font-size: .78rem; overflow-x: auto; white-space: nowrap; min-width: 0; color: var(--muted); }
+.copy-btn { font: 600 .76rem var(--body); border: 1px solid var(--gold); background: transparent; color: var(--gold); border-radius: 3px; padding: 6px 10px; cursor: pointer; }
+.copy-btn.done { background: var(--gold); color: var(--bg); }
+.conflicts { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.conflicts th, .conflicts td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.conflicts th { font-weight: 600; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.tablebox { overflow-x: auto; }
+.good { margin: 0; padding-left: 1.1em; color: var(--muted); display: grid; gap: 4px; font-size: .92rem; }
+
+/* How it's made */
+.made { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; margin-top: 32px; }
+.made blockquote { margin: 0; font: 400 1.35rem/1.45 var(--display); border-left: 2px solid var(--gold); padding-left: 20px; }
+.proofs { display: grid; gap: 14px; }
+.proof { display: grid; grid-template-columns: 5.5rem 1fr; gap: 14px; align-items: baseline; }
+.proof strong { font: 400 1.5rem/1 var(--display); color: var(--gold); font-variant-numeric: tabular-nums; }
+.proof p { color: var(--muted); font-size: .92rem; }
+
+footer { border-top: 1px solid var(--line); padding-block: 40px; font-size: .84rem; color: var(--muted); display: grid; gap: 14px; }
+footer .links { display: flex; gap: 20px; flex-wrap: wrap; }
+
+@media (max-width: 860px) {
+  .hero, .mod, .made { grid-template-columns: 1fr; }
+  .replace { grid-template-columns: 1fr; }
+  .arrow { transform: rotate(90deg); justify-self: start; }
+  .url { grid-template-columns: 1fr auto; }
+  .url code { grid-column: 1 / -1; grid-row: 2; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <nav>
+    <a class="brand" href="#"><img src="../img/logo.png" alt="DAS" width="59" height="34"><span>Darshyne's <b>Automation</b> Suite</span></a>
+    <div class="navlinks">
+      <a href="#modules">Modules</a>
+      <a href="#install">Installer</a>
+      <a href="#made">Comment c'est fait</a>
+      <a href="https://www.youtube.com/@darshyneizumi385">YouTube</a>
+      <a href="https://discord.gg/PDSq8dYdTP">Discord</a>
+      <a href="https://github.com/Darshyne/dnd5e-combat">GitHub</a>
+      <a class="lang" href="../" hreflang="en" lang="en">EN</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="copy">
+      <span class="eyebrow">Foundry VTT V14 · dnd5e 6 · règles D&amp;D 2024</span>
+      <h1>Tout automatisé<br> <em>Dès l'installation</em></h1>
+      <p class="lede">Le combat façon Baldur's Gate 3 dans Foundry : on se déplace le long d'un chemin, on attaque d'un clic, on réagit et on lance ses jets de sauvegarde sur son propre écran. Toutes les classes et espèces du Manuel des joueurs 2024 sont automatisées. Gratuit et open source.</p>
+      <div class="ctas">
+        <a class="btn primary" href="#install">Installer en deux minutes</a>
+        <a class="btn ghost" href="#modules">Le voir en action</a>
+      </div>
+      <div class="facts">
+        <div><strong>6</strong>modules, prenez ce qu'il vous faut</div>
+        <div><strong>1 400+</strong>tests automatiques</div>
+        <div><strong>0 €</strong>pas de Patreon, rien de verrouillé</div>
+      </div>
+    </div>
+    <div class="screen">
+      <video src="../clips/short-01.mp4" poster="../clips/short-01.jpg" autoplay muted loop playsinline
+        aria-label="Un guerrier s'approche d'un gobelin, attaque deux fois et le tue"></video>
+    </div>
+  </header>
+
+  <section>
+    <span class="eyebrow">L'automatisation, en simple</span>
+    <h2>Six modules d'automatisation deviennent un seul</h2>
+    <div class="replace">
+      <div class="pile">
+        <span>Midi-QOL</span><span>DAE</span><span>Chris's Premades</span>
+        <span>Coven's Automation Toolkit</span><span>Aura Effects</span><span>Automated Conditions</span>
+      </div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="core-tile">
+        <h3>DAS · Core</h3>
+        <p>Un seul module gère toute la boucle de combat : attaques, sauvegardes, réactions, zones, auras, états. Plus d'ordre de chargement à respecter, plus de compatibilités à vérifier entre six auteurs, plus d'automatisation à importer sort par sort.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="modules">
+    <span class="eyebrow">Les modules</span>
+    <h2>Seul Core est obligatoire. Ajoutez le reste un par un.</h2>
+    <p class="lede" style="margin-top:14px">Chaque extrait ci-dessous est un vrai moment dans Foundry, sans coupe. Cliquez dessus pour le voir en grand. Les shorts complets, avec le son, sont sur <a href="https://www.youtube.com/@darshyneizumi385">YouTube</a>.</p>
+
+    <div class="modules">
+      <article class="mod">
+        <div class="text">
+          <span class="tag">Obligatoire</span>
+          <h3>DAS · Core</h3>
+          <p>Le moteur de règles et de combat. Il gère toute la boucle de combat : plus aucun module ne se dispute vos clics.</p>
+          <ul>
+            <li>Un clic au sol pour suivre un chemin, un clic sur un ennemi pour l'attaquer</li>
+            <li>Les attaques d'opportunité résolues avant le déplacement</li>
+            <li>Réactions et jets de sauvegarde sur l'écran de chaque joueur</li>
+            <li>Zones persistantes, concentration, états, auras</li>
+            <li>Règles de vision et de lumière : qui voit qui, Fouille, Perception passive</li>
+          </ul>
+          <p class="need">Demande Foundry V14 et dnd5e 6.0 ou plus récent. Ne modifie ni Foundry ni le système.</p>
+        </div>
+        <div class="clips">
+          <figure class="clip"><video data-src="../clips/short-01.mp4" poster="../clips/short-01.jpg" muted loop playsinline preload="none"></video><figcaption><span>Attaque</span>S'approcher et frapper</figcaption></figure>
+          <figure class="clip"><video data-src="../clips/short-03a.mp4" poster="../clips/short-03a.jpg" muted loop playsinline preload="none"></video><figcaption><span>Réaction</span>Attaque d'opportunité</figcaption></figure>
+          <figure class="clip"><video data-src="../clips/short-03b.mp4" poster="../clips/short-03b.jpg" muted loop playsinline preload="none"></video><figcaption><span>Action</span>Se désengager d'abord</figcaption></figure>
+          <figure class="clip"><video data-src="../clips/short-04.mp4" poster="../clips/short-04.jpg" muted loop playsinline preload="none"></video><figcaption><span>Réaction</span>Bouclier !</figcaption></figure>
+          <figure class="clip"><video data-src="../clips/short-05.mp4" poster="../clips/short-05.jpg" muted loop playsinline preload="none"></video><figcaption><span>Sauvegardes</span>Boule de feu : chacun son jet</figcaption></figure>
+          <figure class="clip"><video data-src="../clips/short-06.mp4" poster="../clips/short-06.jpg" muted loop playsinline preload="none"></video><figcaption><span>Zone</span>Esprits gardiens</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="mod">
+        <div class="text">
+          <span class="tag">Demande Core</span>
+          <h3>DAS · Combat UI</h3>
+          <p>L'écran d'où l'on joue : une barre d'actions en bas, les portraits du groupe sur le côté, l'ordre des tours en haut.</p>
+          <ul>
+            <li>Actions rangées par onglet, disposition gardée pour chaque personnage</li>
+            <li>Le niveau d'un sort se choisit dans un tiroir</li>
+            <li>Une action grisée dit pourquoi</li>
+            <li>Budget de déplacement, Foncer, et le chemin affiché avant de valider</li>
+          </ul>
+        </div>
+        <div class="clips">
+          <figure class="clip"><video data-src="../clips/short-07.mp4" poster="../clips/short-07.jpg" muted loop playsinline preload="none"></video><figcaption><span>Interface</span>La barre et la frise</figcaption></figure>
+          <figure class="clip"><video data-src="../clips/short-02.mp4" poster="../clips/short-02.jpg" muted loop playsinline preload="none"></video><figcaption><span>Déplacement</span>Chemin, budget, Foncer</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="mod">
+        <div class="text">
+          <span class="tag">Demande Core</span>
+          <h3>DAS · Loot &amp; Trade</h3>
+          <p>Ce qui se passe après le combat : des corps à fouiller, des coffres à crocheter, des marchands avec qui marchander.</p>
+          <ul>
+            <li>Trésor tiré à la première fouille, selon le facteur de puissance</li>
+            <li>Contenants verrouillés : clé, outils de voleur ou MJ</li>
+            <li>Vol à la tire, objets jetés au sol, morts relevés</li>
+            <li>Fenêtre de troc, marchands qui se réapprovisionnent</li>
+          </ul>
+        </div>
+        <div class="clips">
+          <figure class="clip"><video data-src="../clips/short-08.mp4" poster="../clips/short-08.jpg" muted loop playsinline preload="none"></video><figcaption><span>Butin</span>Fouiller le corps</figcaption></figure>
+          <figure class="clip"><video data-src="../clips/short-09.mp4" poster="../clips/short-09.jpg" muted loop playsinline preload="none"></video><figcaption><span>Contenant</span>Le coffre est verrouillé</figcaption></figure>
+          <figure class="clip"><video data-src="../clips/short-10.mp4" poster="../clips/short-10.jpg" muted loop playsinline preload="none"></video><figcaption><span>Vol</span>Vol à la tire</figcaption></figure>
+          <figure class="clip"><video data-src="../clips/short-11.mp4" poster="../clips/short-11.jpg" muted loop playsinline preload="none"></video><figcaption><span>Au sol</span>Jeter son épée</figcaption></figure>
+          <figure class="clip"><video data-src="../clips/short-12.mp4" poster="../clips/short-12.jpg" muted loop playsinline preload="none"></video><figcaption><span>Nécromancie</span>Relève-toi</figcaption></figure>
+          <figure class="clip"><video data-src="../clips/short-13.mp4" poster="../clips/short-13.jpg" muted loop playsinline preload="none"></video><figcaption><span>Marchand</span>Marchander</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="mod">
+        <div class="text">
+          <span class="tag">Autonome</span>
+          <h3>DAS · Shadows &amp; Ambience</h3>
+          <p>Des jetons qui s'ancrent dans la scène. Purement visuel : rien n'est jamais écrit dans votre monde.</p>
+          <ul>
+            <li>Ombres au sol, et ombres portées par les lumières et le soleil</li>
+            <li>Les créatures volantes flottent ; plus un jeton est haut, plus il paraît grand</li>
+            <li>Flou au-delà de la vision dans le noir</li>
+          </ul>
+        </div>
+        <div class="clips">
+          <figure class="clip"><video data-src="../clips/short-14.mp4" poster="../clips/short-14.jpg" muted loop playsinline preload="none"></video><figcaption><span>Lumière</span>Ombres et vol</figcaption></figure>
+          <figure class="clip"><div class="soon">Dans le noir : extrait à venir</div><figcaption><span>Vision</span>Flou de vision dans le noir</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="mod">
+        <div class="text">
+          <span class="tag">Demande BLFX Premium</span>
+          <h3>DAS · Animations</h3>
+          <p>Des animations Boss Loot pour les capacités que Boss Loot ne reconnaît pas seul, comme les sorts de haut niveau. Vos propres animations sont conservées.</p>
+          <p class="need">Boss Loot est un module tiers payant, non inclus.</p>
+        </div>
+        <div class="clips">
+          <figure class="clip"><div class="soon">Extrait à venir</div><figcaption><span>Sort</span>Sort de haut niveau</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="mod">
+        <div class="text">
+          <span class="tag">Demande Core</span>
+          <h3>DAS · Homebrew</h3>
+          <p>Créez vos propres sorts, aptitudes et objets magiques automatisés, pas à pas, sans écrire de code.</p>
+        </div>
+        <div class="clips">
+          <figure class="clip"><div class="soon">Extrait à venir</div><figcaption><span>Créateur</span>Créer un sort</figcaption></figure>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="install">
+    <span class="eyebrow">Installer</span>
+    <h2>Coller un lien dans Foundry</h2>
+    <p class="lede" style="margin-top:14px">DAS ne figure pas dans le catalogue de Foundry. On l'installe avec ces liens, puis les mises à jour arrivent par l'habituel <em>Check for Updates</em> de Foundry. Les mêmes liens marchent sur The Forge.</p>
+
+    <div class="steps">
+      <div class="step">
+        <span class="n">1</span>
+        <div>
+          <h3>D'abord, installer Core</h3>
+          <p>Dans Foundry, ouvrez <em>Add-on Modules → Install Module</em>, collez le lien en bas, puis <em>Install</em>.</p>
+          <div class="urls">
+            <div class="url"><span class="name">DAS · Core<small>obligatoire</small></span><code>https://github.com/Darshyne/dnd5e-combat/releases/latest/download/module.json</code><button class="copy-btn" type="button">Copier</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="n">2</span>
+        <div>
+          <h3>Ajouter les modules voulus</h3>
+          <div class="urls">
+            <div class="url"><span class="name">Combat UI<small>demande Core</small></span><code>https://github.com/Darshyne/darsh-dnd-ui/releases/latest/download/module.json</code><button class="copy-btn" type="button">Copier</button></div>
+            <div class="url"><span class="name">Loot &amp; Trade<small>demande Core</small></span><code>https://github.com/Darshyne/darsh-loot/releases/latest/download/module.json</code><button class="copy-btn" type="button">Copier</button></div>
+            <div class="url"><span class="name">Shadows &amp; Ambience<small>autonome</small></span><code>https://github.com/Darshyne/dnd5e-lumiere/releases/latest/download/module.json</code><button class="copy-btn" type="button">Copier</button></div>
+            <div class="url"><span class="name">Animations<small>demande BLFX Premium</small></span><code>https://github.com/Darshyne/darsh-animations/releases/latest/download/module.json</code><button class="copy-btn" type="button">Copier</button></div>
+            <div class="url"><span class="name">Homebrew<small>demande Core</small></span><code>https://github.com/Darshyne/darsh-homebrew/releases/latest/download/module.json</code><button class="copy-btn" type="button">Copier</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="n">3</span>
+        <div>
+          <h3>Désactiver ce que DAS remplace</h3>
+          <div class="tablebox">
+            <table class="conflicts">
+              <thead><tr><th>Si vous activez</th><th>Désactivez</th></tr></thead>
+              <tbody>
+                <tr><td>Core</td><td>Midi-QOL, DAE, Chris's Premades, Coven's Automation Toolkit, Aura Effects, Automated Conditions</td></tr>
+                <tr><td>Combat UI</td><td>BG3 Inspired HUD, Carousel Combat Tracker, Party HUD</td></tr>
+                <tr><td>Loot &amp; Trade</td><td>Item Piles. Une macro fournie convertit vos marchands Item Piles.</td></tr>
+                <tr><td>Shadows &amp; Ambience</td><td>Token Elevation Shadows, Sprite Shadows, Flying Tokens</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="n">4</span>
+        <div>
+          <h3>Bon à savoir</h3>
+          <ul class="good">
+            <li>L'interface existe en anglais et en français. D'autres langues peuvent être ajoutées : chaque module a un fichier de traduction.</li>
+            <li>Core propose trois niveaux d'automatisation dans ses réglages : Essentiel, Assisté et Complet.</li>
+            <li>Sauvegardez votre monde avant d'essayer DAS sur une campagne en cours.</li>
+            <li>Une question, un bug, une idée ? Rejoignez le <a href="https://discord.gg/PDSq8dYdTP">Discord</a> (salon #francais), ou ouvrez une <em>issue</em> sur la page GitHub du module.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="made">
+    <span class="eyebrow">Comment c'est fait</span>
+    <h2>Écrit avec une IA. Vérifié avec soin.</h2>
+    <div class="made">
+      <blockquote>« Je suis MJ, pas développeur. DAS est écrit avec l'aide d'une IA, et voici ce que je fais pour qu'il tienne la route à la table. »</blockquote>
+      <div class="proofs">
+        <div class="proof"><strong>1 400+</strong><p>tests automatiques, lancés par GitHub à chaque modification.</p></div>
+        <div class="proof"><strong>139</strong><p>scénarios de combat rejoués dans Foundry.</p></div>
+        <div class="proof"><strong>0</strong><p>modification de Foundry ou du système dnd5e. Uniquement les points d'accroche publics.</p></div>
+        <div class="proof"><strong>MIT</strong><p>licence libre. Chacun peut lire, copier ou reprendre le code.</p></div>
+        <div class="proof"><strong>Chaque semaine</strong><p>joué à la table de l'auteur, avec des notes de version publiques.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="links">
+      <a href="https://github.com/Darshyne/dnd5e-combat">GitHub</a>
+      <a href="https://www.youtube.com/@darshyneizumi385">YouTube</a>
+      <a href="https://discord.gg/PDSq8dYdTP">Discord</a>
+      <a href="#">Ko-fi (facultatif, ne débloque rien)</a>
+      <a href="https://github.com/Darshyne/dnd5e-combat/issues">Signaler un bug</a>
+    </div>
+    <p>Cartes de Forgotten Adventures. Effets visuels de Boss Loot (BLFX). Cette œuvre contient du contenu du System Reference Document 5.2 de Wizards of the Coast LLC, sous licence CC BY 4.0. Sans lien avec Wizards of the Coast ni Foundry Gaming, qui ne la cautionnent pas.</p>
+  </footer>
+</div>
+
+<dialog class="viewer" id="viewer" aria-label="Extrait en grand">
+  <button class="nav prev" type="button" aria-label="Extrait précédent">‹</button>
+  <figure>
+    <video muted loop playsinline controls></video>
+    <figcaption></figcaption>
+  </figure>
+  <button class="nav next" type="button" aria-label="Extrait suivant">›</button>
+  <button class="close" type="button" aria-label="Fermer">✕</button>
+</dialog>
+
+<script>
+// Copy buttons for the manifest links.
+document.querySelectorAll(".copy-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const code = btn.parentElement.querySelector("code");
+    const done = () => { btn.textContent = "Copié"; btn.classList.add("done"); setTimeout(() => { btn.textContent = "Copier"; btn.classList.remove("done"); }, 1600); };
+    const select = () => { const r = document.createRange(); r.selectNodeContents(code); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Sélectionné"; };
+    try { navigator.clipboard.writeText(code.textContent).then(done, select); } catch { select(); }
+  });
+});
+
+// Module clips: loaded and played only while on screen, paused when scrolled away.
+// With reduced motion, nothing plays on its own. A click opens the clip full size.
+const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const clips = [...document.querySelectorAll(".clip video")];
+const load = v => { if ( !v.src && v.dataset.src ) v.src = v.dataset.src; };
+const watcher = "IntersectionObserver" in window ? new IntersectionObserver(entries => {
+  for ( const { target: v, isIntersecting } of entries ) {
+    if ( isIntersecting && !calm && !viewer.open ) { load(v); v.play().catch(() => {}); }
+    else if ( !isIntersecting ) v.pause();
+  }
+}, { threshold: 0.4 }) : null;
+if ( calm ) document.querySelector(".screen video")?.removeAttribute("autoplay");
+
+// Full-size viewer: every clip of the page in order (the hero clip first), arrows and keys to go through them.
+const viewer = document.getElementById("viewer");
+const big = viewer.querySelector("video");
+const caption = viewer.querySelector("figcaption");
+const hero = document.querySelector(".screen video");
+const entries = [
+  { src: "../clips/short-01.mp4", poster: "../clips/short-01.jpg", html: "<span>Attaque</span>S'approcher et frapper" },
+  ...clips.map(v => ({ src: v.dataset.src, poster: v.poster, html: v.closest(".clip").querySelector("figcaption").innerHTML }))
+].filter((e, i, all) => all.findIndex(o => o.src === e.src) === i);
+let index = 0;
+function show(i) {
+  index = (i + entries.length) % entries.length;
+  const e = entries[index];
+  big.poster = e.poster; big.src = e.src; caption.innerHTML = e.html;
+  big.play().catch(() => {});
+}
+function open(src) {
+  clips.forEach(v => v.pause()); hero?.pause();
+  show(Math.max(0, entries.findIndex(e => e.src === src)));
+  viewer.showModal();
+}
+viewer.addEventListener("close", () => {
+  big.pause(); big.removeAttribute("src"); big.load();
+  if ( !calm ) hero?.play().catch(() => {});
+  if ( watcher ) clips.forEach(v => { watcher.unobserve(v); watcher.observe(v); });
+});
+viewer.querySelector(".prev").addEventListener("click", () => show(index - 1));
+viewer.querySelector(".next").addEventListener("click", () => show(index + 1));
+viewer.querySelector(".close").addEventListener("click", () => viewer.close());
+viewer.addEventListener("click", ev => { if ( ev.target === viewer ) viewer.close(); });   // click on the dark backdrop
+viewer.addEventListener("keydown", ev => {
+  if ( ev.key === "ArrowLeft" ) show(index - 1);
+  else if ( ev.key === "ArrowRight" ) show(index + 1);
+});
+clips.forEach(v => {
+  watcher?.observe(v);
+  v.closest(".clip").insertAdjacentHTML("beforeend", '<span class="zoom" aria-hidden="true">⤢</span>');
+  v.addEventListener("click", () => open(v.dataset.src));
+});
+hero?.addEventListener("click", () => open("../clips/short-01.mp4"));
+</script>
+</body>
+</html>
