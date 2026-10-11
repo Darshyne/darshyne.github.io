@@ -1,0 +1,55 @@
+# New videos of the DAS YouTube channel → Discord #announcements.
+# Every 30 minutes (GitHub may run it later than scheduled), or by hand from the Actions tab.
+# Needs the repository secret DISCORD_YOUTUBE_WEBHOOK (a webhook of the #announcements channel).
+# The list of videos already posted lives on the `youtube-bot` branch, so the site (branch `main`) is never rebuilt.
+name: YouTube → Discord
+
+on:
+  schedule:
+    - cron: "7,37 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: youtube-bot
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load the list of videos already posted
+        run: |
+          if git fetch --depth=1 origin youtube-bot:youtube-bot 2>/dev/null; then
+            git show youtube-bot:seen.json > "$RUNNER_TEMP/seen.json"
+          else
+            echo "null" > "$RUNNER_TEMP/seen.json"
+          fi
+
+      - name: Post new videos
+        env:
+          CHANNEL_ID: UCY7SbN_Azwa0HH1RbLtMphQ
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_YOUTUBE_WEBHOOK }}
+        run: node tools/youtube-to-discord.mjs "$RUNNER_TEMP/seen.json"
+
+      - name: Save the list
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git show-ref --quiet refs/heads/youtube-bot; then
+            git checkout -q youtube-bot
+          else
+            git checkout -q --orphan youtube-bot
+            git rm -rq --cached . && git clean -fdq
+          fi
+          cp "$RUNNER_TEMP/seen.json" seen.json
+          git add seen.json
+          if git diff --cached --quiet; then echo "List unchanged."; else
+            git commit -qm "YouTube: videos already posted"
+            git push -q origin youtube-bot
+          fi
