@@ -161,6 +161,8 @@ nav { display: flex; align-items: center; justify-content: space-between; gap: 1
 .counts div { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; color: var(--muted); font-size: .92rem; }
 .counts strong { display: block; font: 400 2rem/1.1 var(--display); color: var(--gold); font-variant-numeric: tabular-nums; }
 .counts-more { margin-top: 24px; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+.beta { display: inline-block; margin-left: 8px; padding: 3px 7px; border: 1px solid var(--gold); border-radius: 3px; font-weight: 600; }
+.beta-note { margin-top: 18px; padding: 12px 16px; border-left: 3px solid var(--gold); background: var(--surface); color: var(--ink); max-width: 70ch; font-size: .95rem; }
 .counts-more p { color: var(--muted); font-size: .92rem; max-width: 60ch; }
 
 /* How it's made */
@@ -202,7 +204,7 @@ footer .links { display: flex; gap: 20px; flex-wrap: wrap; }
 
   <header class="hero">
     <div class="copy">
-      <span class="eyebrow">Foundry VTT V14 · dnd5e 6 · règles D&amp;D 2024</span>
+      <span class="eyebrow">Foundry VTT V14 · dnd5e 6 · règles D&amp;D 2024 <b class="beta">Bêta</b></span>
       <h1>Automatiser<br> <em>Et prêt à jouer</em></h1>
       <p class="lede">Des combats à la BG3 dans Foundry : on se déplace avec un vrai pathfinding, on agit depuis des menus contextuels, sans avoir à cibler avant, et chacun réagit et lance ses jets de sauvegarde sur son propre écran. Toutes les classes et espèces du Manuel des joueurs 2024 sont automatisées. Gratuit et open source.</p>
       <div class="ctas">
@@ -242,13 +244,14 @@ footer .links { display: flex; gap: 20px; flex-wrap: wrap; }
     <h2>Des règles écrites pour D&amp;D 2024</h2>
     <p class="lede" style="margin-top:14px">Tout sort, toute aptitude se joue à partir des données de dnd5e : attaque, sauvegarde, dégâts, effets. Pour ce que les données ne savent pas faire seules, le Core ajoute ses propres règles.</p>
     <div class="counts">
-      <div><strong data-count="spells">160</strong>sorts</div>
+      <div><strong data-count="spells">164</strong>sorts</div>
       <div><strong data-count="classes">115</strong>aptitudes de classe</div>
       <div><strong data-count="feats">46</strong>dons</div>
       <div><strong data-count="species">14</strong>traits d'espèce</div>
       <div><strong data-count="monsters">57</strong>capacités de monstres</div>
       <div><strong data-count="items">21</strong>objets</div>
     </div>
+    <p class="beta-note"><strong>DAS est en bêta.</strong> Tous les sorts et toutes les aptitudes ne sont pas encore couverts : certains demandent encore un clic ou un jet à la main. Si l'un d'eux ne se comporte pas comme il devrait, dites-le sur <a href="https://discord.gg/PDSq8dYdTP">Discord</a>.</p>
     <div class="counts-more">
       <a class="btn ghost" href="automatise.html">Voir la liste complète</a>
       <p>Comptés dans le code source du Core. S'y ajoute ce que le moteur gère pour toutes les créatures : bottes d'arme, attaques d'opportunité, abris, empoignade, Forme sauvage, Métamagie…</p>

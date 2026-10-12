@@ -34,6 +34,9 @@ const T = [
   ['<strong>$0</strong>no Patreon, nothing locked', '<strong>0 €</strong>pas de Patreon, rien de payant'],
   ['aria-label="A fighter walks up to a goblin, attacks twice and kills it"', 'aria-label="Un guerrier s\'approche d\'un gobelin, attaque deux fois et le tue"'],
   // What's automated
+  [`<strong>DAS is in beta.</strong> Not every spell and feature is covered yet: some still need a click or a roll by hand. If one doesn't behave as it should, tell us on`,
+   `<strong>DAS est en bêta.</strong> Tous les sorts et toutes les aptitudes ne sont pas encore couverts : certains demandent encore un clic ou un jet à la main. Si l'un d'eux ne se comporte pas comme il devrait, dites-le sur`],
+  ['<b class="beta">Beta</b>', '<b class="beta">Bêta</b>'],
   [`<span class="eyebrow">What's automated</span>`, '<span class="eyebrow">Ce qui est automatisé</span>'],
   ['<h2>Rules written for D&amp;D 2024</h2>', '<h2>Des règles écrites pour D&amp;D 2024</h2>'],
   [`Any spell or feature is played from dnd5e's own data: attack, save, damage, effects. On top of that, Core ships rules of its own for what the data can't do alone.`,

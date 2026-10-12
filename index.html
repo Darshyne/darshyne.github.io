@@ -161,6 +161,8 @@ nav { display: flex; align-items: center; justify-content: space-between; gap: 1
 .counts div { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; color: var(--muted); font-size: .92rem; }
 .counts strong { display: block; font: 400 2rem/1.1 var(--display); color: var(--gold); font-variant-numeric: tabular-nums; }
 .counts-more { margin-top: 24px; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+.beta { display: inline-block; margin-left: 8px; padding: 3px 7px; border: 1px solid var(--gold); border-radius: 3px; font-weight: 600; }
+.beta-note { margin-top: 18px; padding: 12px 16px; border-left: 3px solid var(--gold); background: var(--surface); color: var(--ink); max-width: 70ch; font-size: .95rem; }
 .counts-more p { color: var(--muted); font-size: .92rem; max-width: 60ch; }
 
 /* How it's made */
@@ -202,7 +204,7 @@ footer .links { display: flex; gap: 20px; flex-wrap: wrap; }
 
   <header class="hero">
     <div class="copy">
-      <span class="eyebrow">Foundry VTT V14 · dnd5e 6 · D&amp;D 2024 rules</span>
+      <span class="eyebrow">Foundry VTT V14 · dnd5e 6 · D&amp;D 2024 rules <b class="beta">Beta</b></span>
       <h1>Full automation<br> <em>Out of the box</em></h1>
       <p class="lede">Baldur's Gate 3-style combat for Foundry: move along a path, attack from a click, react and roll your saves on your own screen. Every class and species of the 2024 Player's Handbook is automated. Free and open source.</p>
       <div class="ctas">
@@ -242,13 +244,14 @@ footer .links { display: flex; gap: 20px; flex-wrap: wrap; }
     <h2>Rules written for D&amp;D 2024</h2>
     <p class="lede" style="margin-top:14px">Any spell or feature is played from dnd5e's own data: attack, save, damage, effects. On top of that, Core ships rules of its own for what the data can't do alone.</p>
     <div class="counts">
-      <div><strong data-count="spells">160</strong>spells</div>
+      <div><strong data-count="spells">164</strong>spells</div>
       <div><strong data-count="classes">115</strong>class features</div>
       <div><strong data-count="feats">46</strong>feats</div>
       <div><strong data-count="species">14</strong>species traits</div>
       <div><strong data-count="monsters">57</strong>monster abilities</div>
       <div><strong data-count="items">21</strong>items</div>
     </div>
+    <p class="beta-note"><strong>DAS is in beta.</strong> Not every spell and feature is covered yet: some still need a click or a roll by hand. If one doesn't behave as it should, tell us on <a href="https://discord.gg/PDSq8dYdTP">Discord</a>.</p>
     <div class="counts-more">
       <a class="btn ghost" href="automated.html">See the full list</a>
       <p>Counted from Core's source code. Plus what is built into the engine for every creature: Weapon Mastery, opportunity attacks, cover, grappling, Wild Shape, Metamagic…</p>

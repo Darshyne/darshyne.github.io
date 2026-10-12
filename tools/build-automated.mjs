@@ -15,11 +15,18 @@ import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { createRequire } from "node:module";
 import { pathToFileURL, fileURLToPath } from "node:url";
+import { execFileSync } from "node:child_process";
 
 const SITE = resolve(fileURLToPath(import.meta.url), "../..");
-const ENGINE = resolve(process.argv[2] ?? join(SITE, "../Foundry dnd5e moteur de combat"));
+const REPO = resolve(process.argv[2] ?? join(SITE, "../Foundry dnd5e moteur de combat"));
 const DATA = process.env.FOUNDRY_DATA ?? "F:/Foundry V14/Data";
-const { ClassicLevel } = createRequire(join(ENGINE, "package.json"))("classic-level");
+const { ClassicLevel } = createRequire(join(REPO, "package.json"))("classic-level");
+
+// Count what is committed (pushed) in the engine, not work in progress: read module/ from the last commit.
+const ENGINE = mkdtempSync(join(tmpdir(), "das-core-"));
+execFileSync("git", ["-C", REPO, "archive", "-o", join(ENGINE, "head.tar"), "HEAD", "module"]);
+execFileSync("tar", ["-xf", "head.tar"], { cwd: ENGINE });
+const engineCommit = execFileSync("git", ["-C", REPO, "rev-parse", "--short", "HEAD"], { encoding: "utf8" }).trim();
 const content = f => import(pathToFileURL(join(ENGINE, "module/scripts/content", f)).href);
 
 const { SHIPPED } = await content("index.mjs");
@@ -169,6 +176,7 @@ const T = {
     intro: `Any spell, feature or monster ability is played from dnd5e's own data: attack roll, saving throw, damage, healing, effects. That is why
       Fireball, Bless or Cure Wounds are not listed here: they need nothing more. The lists below are what the data alone can't do, and what
       Core adds on top: <strong>${counts.total} rules</strong> keyed to dnd5e identifiers, so they apply to any creature, player character or monster.`,
+    beta: `<strong>DAS is in beta.</strong> Not every spell and feature is covered yet: some still need a click or a roll by hand.`,
     source: `Generated from the source code of DAS · Core ${engineVersion}. Names from the SRD 5.2, the Player's Handbook, the Monster Manual
       and Ravenloft: The Horrors Within (names only: the books and their modules are not included).`,
     builtIn: "Built into the engine", builtInNote: "Coded into the engine itself, for every creature, rather than tied to one item.",
@@ -186,6 +194,7 @@ const T = {
       soins, effets. C'est pour ça que Boule de feu, Bénédiction ou Soins ne figurent pas ici : ils n'ont besoin de rien de plus. Les listes
       ci-dessous, c'est ce que les données ne savent pas faire seules et que le Core ajoute : <strong>${counts.total} règles</strong> rattachées
       aux identifiants de dnd5e, valables pour toute créature, personnage joueur ou monstre.`,
+    beta: `<strong>DAS est en bêta.</strong> Tous les sorts et toutes les aptitudes ne sont pas encore couverts : certains demandent encore un clic ou un jet à la main.`,
     source: `Relevé dans le code source de DAS · Core ${engineVersion}. Les noms sont ceux, en anglais, du SRD 5.2, du Player's Handbook, du
       Monster Manual et de Ravenloft: The Horrors Within (les noms seulement : ni les livres ni leurs modules ne sont fournis).`,
     builtIn: "Intégré au moteur", builtInNote: "Codé dans le moteur lui-même, pour toutes les créatures, sans dépendre d'un objet en particulier.",
@@ -259,6 +268,7 @@ nav .lang { border: 1px solid var(--line); border-radius: 3px; padding: 0 8px; f
 header { padding-block: 32px 40px; }
 header p { color: var(--muted); max-width: 70ch; margin: 16px 0 0; }
 header p strong { color: var(--ink); }
+.beta-note { padding: 12px 16px; border-left: 3px solid var(--gold); background: var(--surface); color: var(--ink) !important; }
 .toc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
 .toc a { border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; text-decoration: none; color: var(--ink); background: var(--surface); font-size: .92rem; }
 section { padding-block: 40px; border-top: 1px solid var(--line); }
@@ -278,6 +288,7 @@ footer { border-top: 1px solid var(--line); padding-block: 32px 48px; color: var
     <span class="eyebrow">${t.eyebrow}</span>
     <h1>${t.h1}</h1>
     <p>${t.intro}</p>
+    <p class="beta-note">${t.beta}</p>
     <div class="toc">${toc}<a href="#built-in">${t.builtIn}</a></div>
   </header>
   ${block("spell", spellGroups)}
@@ -317,7 +328,8 @@ index = index.replace(/(<strong data-count="(\w+)">)[^<]*(<\/strong>)/g, (m, ope
 });
 writeFileSync(indexPath, index);
 
-console.log(`Core ${engineVersion}: ${JSON.stringify(counts)}; ${patched} counts updated on index.html`);
+rmSync(ENGINE, { recursive: true, force: true });
+console.log(`Core ${engineVersion} (${engineCommit}): ${JSON.stringify(counts)}; ${patched} counts updated on index.html`);
 if ( byCat.other?.length ) console.log("other:", byCat.other.map(r => r.id).join(" "));
 const unsorted = (byCat.class ?? []).filter(r => r.group === "Other");
 if ( unsorted.length ) console.log("class features without a class:", unsorted.map(r => r.id).join(" "));
